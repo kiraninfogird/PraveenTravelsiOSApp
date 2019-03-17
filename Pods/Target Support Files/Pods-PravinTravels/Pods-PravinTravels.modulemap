@@ -1,0 +1,6 @@
+framework module Pods_PravinTravels {
+  umbrella header "Pods-PravinTravels-umbrella.h"
+
+  export *
+  module * { export * }
+}
