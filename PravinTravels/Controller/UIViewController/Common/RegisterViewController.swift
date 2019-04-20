@@ -115,6 +115,7 @@ class RegisterViewController: UIViewController {
         self.registerButton.isUserInteractionEnabled = true
         self.mAlreadyAMemberButton.isUserInteractionEnabled = true
         navigationController?.navigationBar.isUserInteractionEnabled = true
+        self.enableAllTextFields()
     }
     
     @IBAction func actionOnViewSubmitButton(_ sender: Any) {
@@ -135,6 +136,24 @@ class RegisterViewController: UIViewController {
         self.mobileTF.text = ""
         self.passwordTF.text = ""
         self.confirmPassowrd.text = ""
+    }
+    
+    func disableAllTextFields()  {
+        self.firstNameTF.isEnabled = false
+        self.lastNameTF.isEnabled = false
+        self.emailIdTF.isEnabled = false
+        self.mobileTF.isEnabled = false
+        self.passwordTF.isEnabled = false
+        self.confirmPassowrd.isEnabled = false
+    }
+    
+    func enableAllTextFields()  {
+        self.firstNameTF.isEnabled = true
+        self.lastNameTF.isEnabled = true
+        self.emailIdTF.isEnabled = true
+        self.mobileTF.isEnabled = true
+        self.passwordTF.isEnabled = true
+        self.confirmPassowrd.isEnabled = true
     }
     
     // MARK:- Validataion Methods
@@ -234,29 +253,28 @@ class RegisterViewController: UIViewController {
                     debugPrint(response)
                     AppUtility.sharedInstance.hideProgressIndicatorWith()
                     if let data = response.result.value{
-                        if  (data as? [[String : AnyObject]]) != nil{
-                            if let dictionaryArray = data as? Array<Dictionary<String, AnyObject?>> {
+                        if  (data as? [String : AnyObject]) != nil{
+                            if let dictionaryArray = data as? Dictionary<String, AnyObject?> {
                                 if dictionaryArray.count > 0 {
                                     var res_code = 0
                                     var res_msg = ""
-                                    for i in 0..<dictionaryArray.count{
-                                        let Object = dictionaryArray[i]
-                                        if let responseCode = Object["responseCode"] as? Int{
-                                            res_code = responseCode
-                                        }
-                                        if let responseMessage = Object["responseMessage"] as? Array<String>{
-                                            res_msg = responseMessage[0]
-                                        }
+                                    if let responseCode = dictionaryArray["responseCode"] as? Int{
+                                        res_code = responseCode
+                                    }
+                                    if let responseMessage = dictionaryArray["responseMessage"] as? String{
+                                        res_msg = responseMessage
                                     }
                                     if res_code == 1 {
                     AppUtility.sharedInstance.showAlertToastMesssageForSuccess(messageToUser: res_msg)
                                         // OPEN POPUP VIEW
+                                        self.view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
                                         self.view.bringSubview(toFront: self.mVerificationView)
                                         self.mVerificationView.isHidden = false
                                         self.registerButton.isUserInteractionEnabled = false
                                         self.mAlreadyAMemberButton.isUserInteractionEnabled = false
                                         self.navigationController?.navigationBar.isUserInteractionEnabled = false
-                                        self.clearAllTextFields()
+                                        self.disableAllTextFields()
+//                                        self.clearAllTextFields()
                                     }else{
                                         AppUtility.sharedInstance.showAlertToastMesssage(messageToUser: res_msg)
                                     }
@@ -290,22 +308,22 @@ class RegisterViewController: UIViewController {
                     AppUtility.sharedInstance.hideProgressIndicatorWith()
                     
                     if let data = response.result.value{
-                        if  (data as? [[String : AnyObject]]) != nil{
-                            if let dictionaryArray = data as? Array<Dictionary<String, AnyObject?>> {
+                        if  (data as? [String : AnyObject]) != nil{
+                            if let dictionaryArray = data as? Dictionary<String, AnyObject?> {
                                 if dictionaryArray.count > 0 {
                                     var res_code = 0
                                     var res_msg = ""
-                                    for i in 0..<dictionaryArray.count{
-                                        let Object = dictionaryArray[i]
-                                        if let responseCode = Object["responseCode"] as? Int{
-                                            res_code = responseCode
-                                        }
-                                        if let responseMessage = Object["responseMessage"] as? Array<String>{
-                                            res_msg = responseMessage[0]
-                                        }
+                                    if let responseCode = dictionaryArray["responseCode"] as? Int{
+                                        res_code = responseCode
+                                    }
+                                    if let responseMessage = dictionaryArray["responseMessage"] as? String{
+                                        res_msg = responseMessage
                                     }
                                     if res_code == 1 {
                                         AppUtility.sharedInstance.showAlertToastMesssageForSuccess(messageToUser: res_msg)
+                                        self.clearAllTextFields()
+                                        self.enableAllTextFields()
+                                        self.view.backgroundColor = UIColor.black.withAlphaComponent(1.0)
                                         self.mVerificationView.isHidden = true
                                         self.registerButton.isUserInteractionEnabled = true
                                         self.mAlreadyAMemberButton.isUserInteractionEnabled = true
